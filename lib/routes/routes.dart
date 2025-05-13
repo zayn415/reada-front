@@ -5,7 +5,7 @@ import '../pages/message.dart';
 import '../pages/mine.dart';
 import '../pages/shelf.dart';
 
-/// 路由常量
+// 路由常量
 class Routes {
   static const String home = '/';
   static const String login = '/login';
