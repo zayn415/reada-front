@@ -18,9 +18,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      initialRoute: Routes.home,
+      initialRoute: Routes.shelf,
       onGenerateRoute: (settings) {
-        if (settings.name == Routes.home) {
+        if (settings.name == Routes.shelf) {
           return MaterialPageRoute(builder: (_) => const MainNavigator());
         }
         return AppRoutes.generateRoute(settings);
