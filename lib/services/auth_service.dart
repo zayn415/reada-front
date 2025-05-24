@@ -2,7 +2,9 @@ import 'package:reada/constants/api_prefix.dart';
 import 'package:reada/utils/api_client.dart';
 
 class AuthService {
-  final ApiClient apiClient = ApiClient();
+  final ApiClient apiClient;
+
+  AuthService(this.apiClient);
 
   // 发送验证码
   Future<Map<String, dynamic>> sendVerificationCode(String email) async {

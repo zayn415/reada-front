@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reada/routes/routes.dart';
 import 'package:reada/services/auth_service.dart';
 
@@ -20,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    authService = AuthService();
+    authService = Provider.of<AuthService>(context, listen: false);
   }
 
   @override

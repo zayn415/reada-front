@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
+import 'package:reada/models/user_info.dart';
+import 'package:reada/providers/user_provider.dart';
 import 'package:reada/routes/routes.dart';
 import 'package:reada/services/auth_service.dart';
+import 'package:reada/storage/user_storage.dart';
 
 import '../constants/colors.dart';
 
@@ -18,13 +22,15 @@ class VerificationPage extends StatefulWidget {
 class _VerificationPageState extends State<VerificationPage> {
   final _formKey = GlobalKey<FormState>();
   late AuthService authService;
+  late UserStorage userStorage;
   late String email;
   final TextEditingController _codeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    authService = AuthService();
+    authService = Provider.of<AuthService>(context, listen: false);
+    userStorage = UserStorage();
     email = widget.email;
   }
 
@@ -77,13 +83,20 @@ class _VerificationPageState extends State<VerificationPage> {
         throw Exception('登录失败');
       }
 
-      // 登录成功，跳转到书架页面
+      // 登录成功
+      // 保存用户信息、token
+      final UserInfo info = UserInfo(
+        token: result['data']['token'] as String,
+        userId: result['data']['userId'],
+      );
+      await userStorage.saveUserInfo(info);
+      // 跳转到书架页面
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacementNamed(
+        Provider.of<UserProvider>(
           context,
-          Routes.shelf,
-          arguments: result['data'],
-        );
+          listen: false,
+        ).login(info.userId.toString(), info.token.toString());
+        Navigator.pushReplacementNamed(context, Routes.shelf);
       });
     } catch (e) {
       throw Exception('登录失败：$e');
