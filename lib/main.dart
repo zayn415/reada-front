@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:reada/models/user_info.dart';
 import 'package:reada/providers/user_provider.dart';
 import 'package:reada/routes/routes.dart';
-import 'package:reada/services/auth_service.dart';
 import 'package:reada/services/user_service.dart';
 import 'package:reada/utils/api_client.dart';
 
@@ -23,9 +22,6 @@ void main() async {
           update:
               (_, userProvider, _) =>
                   ApiClient(Dio(), () => userProvider.token),
-        ),
-        ProxyProvider<ApiClient, AuthService>(
-          update: (_, apiClient, _) => AuthService(apiClient),
         ),
 
         ProxyProvider<ApiClient, UserService>(

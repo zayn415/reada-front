@@ -2,16 +2,16 @@ import 'package:flutter/cupertino.dart';
 
 class UserProvider extends ChangeNotifier {
   bool _isLoggedIn = false;
-  String _currentUserId = '';
+  int _currentUserId = -1;
   String _token = '';
 
   bool get isLoggedIn => _isLoggedIn;
 
-  String get currentUserId => _currentUserId;
+  int get currentUserId => _currentUserId;
 
   String get token => _token;
 
-  void login(String userId, String token) {
+  void login(int userId, String token) {
     _isLoggedIn = true;
     _currentUserId = userId;
     _token = token;
@@ -20,7 +20,7 @@ class UserProvider extends ChangeNotifier {
 
   void logout() {
     _isLoggedIn = false;
-    _currentUserId = '';
+    _currentUserId = -1;
     notifyListeners();
   }
 }

@@ -9,10 +9,18 @@ class ApiClient {
   final String _baseUrl = 'http://10.0.2.2:8080';
 
   ApiClient(this._dio, this._getToken) {
-    _dio.options.baseUrl = _baseUrl;
-    _dio.options.connectTimeout = const Duration(seconds: 10);
-    _dio.options.receiveTimeout = const Duration(seconds: 10);
-    _dio.interceptors.add(LogInterceptor(requestBody: true));
+    _dio.options
+      ..baseUrl = _baseUrl
+      ..connectTimeout = const Duration(seconds: 10)
+      ..receiveTimeout = const Duration(seconds: 10);
+    _dio.interceptors.add(
+      LogInterceptor(
+        requestBody: true,
+        requestHeader: true,
+        responseBody: true,
+        responseHeader: false,
+      ),
+    );
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
@@ -55,17 +63,29 @@ class ApiClient {
   // POST请求
   Future<Map<String, dynamic>> postRequest(
     String endpoint,
-    Map<String, dynamic> body,
-  ) async {
+    Map<String, dynamic> body, {
+    Map<String, dynamic>? headers,
+  }) async {
     try {
-      final response = await _dio.post(endpoint, data: body);
-      if (response.data is Map<String, dynamic>) {
-        return response.data;
+      final response = await _dio.post(
+        endpoint,
+        data: body,
+        options: headers != null ? Options(headers: headers) : null,
+      );
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map<String, dynamic>) {
+          return data;
+        } else {
+          throw Exception('返回数据格式错误');
+        }
       } else {
-        throw Exception('返回数据格式错误');
+        throw Exception('请求失败: ${response.statusCode}');
       }
     } on DioException catch (e) {
       throw Exception(_handleDioError(e));
+    } catch (e) {
+      throw Exception('未知错误: $e');
     }
   }
 }

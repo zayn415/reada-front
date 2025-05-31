@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:reada/models/user_info.dart';
 import 'package:reada/providers/user_provider.dart';
 import 'package:reada/routes/routes.dart';
-import 'package:reada/services/auth_service.dart';
+import 'package:reada/services/user_service.dart';
 import 'package:reada/storage/user_storage.dart';
 
 import '../constants/colors.dart';
@@ -21,7 +21,7 @@ class VerificationPage extends StatefulWidget {
 
 class _VerificationPageState extends State<VerificationPage> {
   final _formKey = GlobalKey<FormState>();
-  late AuthService authService;
+  late UserService userService;
   late UserStorage userStorage;
   late String email;
   final TextEditingController _codeController = TextEditingController();
@@ -29,7 +29,7 @@ class _VerificationPageState extends State<VerificationPage> {
   @override
   void initState() {
     super.initState();
-    authService = Provider.of<AuthService>(context, listen: false);
+    userService = Provider.of<UserService>(context, listen: false);
     userStorage = UserStorage();
     email = widget.email;
   }
@@ -43,7 +43,7 @@ class _VerificationPageState extends State<VerificationPage> {
   // 重发验证码
   Future<void> _handleResendCode() async {
     try {
-      final result = await authService.sendVerificationCode(email);
+      final result = await userService.sendVerificationCode(email);
       if (result['code'] != 200) {
         throw Exception('发送验证码失败：${result['message']}');
       }
@@ -55,52 +55,60 @@ class _VerificationPageState extends State<VerificationPage> {
   // 登录
   Future<void> _handleLogin(String code) async {
     try {
-      final result = await authService.login(email, code);
-      if (result['code'] != 200) {
-        if (result['message'] == '验证码错误') {
-          // 弹框提示，清空验证码
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: const Text('验证码错误'),
-                  content: const Text('请输入正确的验证码'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _codeController.clear();
-                      },
-                      child: const Text('确定'),
-                    ),
-                  ],
-                );
-              },
-            );
-          });
-        }
-        throw Exception('登录失败');
-      }
-
-      // 登录成功
-      // 保存用户信息、token
-      final UserInfo info = UserInfo(
-        token: result['data']['token'] as String,
-        userId: result['data']['userId'],
-      );
-      await userStorage.saveUserInfo(info);
-      // 跳转到书架页面
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Provider.of<UserProvider>(
-          context,
-          listen: false,
-        ).login(info.userId.toString(), info.token.toString());
-        Navigator.pushReplacementNamed(context, Routes.shelf);
-      });
+      final result = await userService.login(email, code);
+      _handleLoginResult(result);
     } catch (e) {
       throw Exception('登录失败：$e');
     }
+  }
+
+  void _handleLoginResult(Map<String, dynamic> result) {
+    if (!mounted) return;
+    final statusCode = result['code'] as int? ?? -1;
+    final message = result['message'] as String? ?? '未知错误';
+
+    if (statusCode != 200) {
+      if (message == '验证码错误') {
+        showDialog(
+          context: context,
+          builder:
+              (ctx) => AlertDialog(
+                title: const Text('验证码错误'),
+                content: const Text('请出入正确的验证码'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                      _codeController.clear();
+                    },
+                    child: const Text('确定'),
+                  ),
+                ],
+              ),
+        );
+        return;
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('登录失败：$message')));
+      return;
+    }
+    final data = result['data'] as Map<String, dynamic>?;
+    if (data == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('登录失败：$message')));
+      return;
+    }
+    final token = data['token'] as String;
+    final userId = data['userId'] as int;
+    userStorage.saveUserInfo({token: token, userId: userId} as UserInfo).then((
+      _,
+    ) {
+      if (!mounted) return;
+      Provider.of<UserProvider>(context, listen: false).login(userId, token);
+      Navigator.pushReplacementNamed(context, Routes.shelf);
+    });
   }
 
   @override

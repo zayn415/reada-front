@@ -2,7 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reada/routes/routes.dart';
-import 'package:reada/services/auth_service.dart';
+import 'package:reada/services/user_service.dart';
 
 // 登录页面
 class LoginPage extends StatefulWidget {
@@ -14,14 +14,14 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  late AuthService authService;
+  late UserService userService;
   Map<String, dynamic>? data;
   final TextEditingController _emailController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    authService = Provider.of<AuthService>(context, listen: false);
+    userService = Provider.of<UserService>(context, listen: false);
   }
 
   @override
@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
     if (_emailController.text.isNotEmpty && EmailValidator.validate(email)) {
       try {
         // 发送验证码
-        final result = await authService.sendVerificationCode(email);
+        final result = await userService.sendVerificationCode(email);
         if (result['code'] != 200) {
           throw Exception('发送验证码失败：${result['message']}');
         }
