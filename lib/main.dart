@@ -14,6 +14,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(UserInfoAdapter());
+
+  final userProvider = UserProvider();
+  await userProvider.loadUserInfo();
+
   runApp(
     MultiProvider(
       providers: [

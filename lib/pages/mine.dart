@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reada/models/user_info.dart';
 import 'package:reada/providers/user_provider.dart';
 import 'package:reada/storage/user_storage.dart';
 
@@ -13,14 +12,21 @@ class MinePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
-    final Future<UserInfo?> userInfo = UserStorage().getUserInfo(
-      userProvider.currentUserId,
-    );
+    final Future<int?> userId = UserStorage().getRecentUserId();
     return Scaffold(
       body: SafeArea(
         child: Center(
           child: Column(
             children: [
+              FutureBuilder<int?>(
+                future: userId,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text('最近登录用户Id： ${snapshot.data}');
+                  }
+                  return Text('加载中...');
+                },
+              ),
               if (!userProvider.isLoggedIn)
                 TextButton(
                   onPressed: () {
@@ -33,11 +39,11 @@ class MinePage extends StatelessWidget {
                   children: [
                     Text('用户Id： ${userProvider.currentUserId}'),
                     Text('token: ${userProvider.token}'),
-                    FutureBuilder<UserInfo?>(
-                      future: userInfo,
+                    FutureBuilder<int?>(
+                      future: userId,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          return Text('用户ID: ${snapshot.data?.userId}');
+                          return Text('最近登录用户Id： ${snapshot.data}');
                         }
                         return Text('加载中...');
                       },

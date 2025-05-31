@@ -102,9 +102,8 @@ class _VerificationPageState extends State<VerificationPage> {
     }
     final token = data['token'] as String;
     final userId = data['userId'] as int;
-    userStorage.saveUserInfo({token: token, userId: userId} as UserInfo).then((
-      _,
-    ) {
+    final UserInfo userInfo = UserInfo(userId: userId, token: token);
+    userStorage.saveUserInfo(userInfo).then((_) {
       if (!mounted) return;
       Provider.of<UserProvider>(context, listen: false).login(userId, token);
       Navigator.pushReplacementNamed(context, Routes.shelf);
