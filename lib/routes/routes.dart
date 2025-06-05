@@ -3,7 +3,7 @@ import 'package:reada/pages/verification_page.dart';
 
 import '../pages/login.dart';
 import '../pages/message.dart';
-import '../pages/mine.dart';
+import '../pages/profile.dart';
 import '../pages/shelf.dart';
 
 // 路由常量
@@ -38,7 +38,7 @@ class AppRoutes {
           },
         );
       case Routes.mine:
-        return MaterialPageRoute(builder: (_) => const MinePage());
+        return MaterialPageRoute(builder: (_) => const ProfilePage());
       case Routes.message:
         return MaterialPageRoute(builder: (_) => const MessagePage());
       case Routes.verification:

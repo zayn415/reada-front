@@ -16,10 +16,7 @@ class UserInfoAdapter extends TypeAdapter<UserInfo> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return UserInfo(
-      token: fields[0] as String,
-      userId: fields[1] as int,
-    );
+    return UserInfo(token: fields[0] as String, userId: fields[1] as String);
   }
 
   @override

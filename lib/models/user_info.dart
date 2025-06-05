@@ -8,7 +8,7 @@ class UserInfo extends HiveObject {
   final String token;
 
   @HiveField(1)
-  final int userId;
+  final String userId;
 
   UserInfo({required this.token, required this.userId});
 }

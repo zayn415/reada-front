@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../constants/colors.dart';
 import '../pages/message.dart';
-import '../pages/mine.dart';
+import '../pages/profile.dart';
 import '../pages/shelf.dart';
 
 // 页面底部导航栏
@@ -19,7 +19,7 @@ class _MainNavigatorState extends State<MainNavigator> {
   static final List<Widget> _pages = <Widget>[
     const ShelfPage(),
     const MessagePage(),
-    const MinePage(),
+    const ProfilePage(),
   ];
 
   void _onItemTapped(int index) {

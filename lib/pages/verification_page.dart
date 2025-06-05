@@ -62,11 +62,13 @@ class _VerificationPageState extends State<VerificationPage> {
     }
   }
 
+  // 处理登录结果
   void _handleLoginResult(Map<String, dynamic> result) {
     if (!mounted) return;
     final statusCode = result['code'] as int? ?? -1;
     final message = result['message'] as String? ?? '未知错误';
 
+    // 登录失败
     if (statusCode != 200) {
       if (message == '验证码错误') {
         showDialog(
@@ -93,7 +95,10 @@ class _VerificationPageState extends State<VerificationPage> {
       ).showSnackBar(SnackBar(content: Text('登录失败：$message')));
       return;
     }
+    // 登录成功
+    print(result);
     final data = result['data'] as Map<String, dynamic>?;
+    print(data);
     if (data == null) {
       ScaffoldMessenger.of(
         context,
@@ -101,9 +106,10 @@ class _VerificationPageState extends State<VerificationPage> {
       return;
     }
     final token = data['token'] as String;
-    final userId = data['userId'] as int;
+    final userId = data['userId'] as String;
     final UserInfo userInfo = UserInfo(userId: userId, token: token);
-    userStorage.saveUserInfo(userInfo).then((_) {
+    // 保存信息
+    userStorage.saveUserInfo(userInfo).then((_) async {
       if (!mounted) return;
       Provider.of<UserProvider>(context, listen: false).login(userId, token);
       Navigator.pushReplacementNamed(context, Routes.shelf);
