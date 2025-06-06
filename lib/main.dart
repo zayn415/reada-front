@@ -7,7 +7,7 @@ import 'package:reada/services/user_service.dart';
 import 'package:reada/storage/user_storage.dart';
 import 'package:reada/utils/api_client.dart';
 
-import 'module/MainNavigator.dart';
+import 'module/navigator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
       initialRoute: Routes.shelf,
       onGenerateRoute: (settings) {
         if (settings.name == Routes.shelf) {
-          return MaterialPageRoute(builder: (_) => const MainNavigator());
+          return MaterialPageRoute(builder: (_) => const BottomNavigator());
         }
         return AppRoutes.generateRoute(settings);
       },

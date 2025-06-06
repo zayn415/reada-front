@@ -49,11 +49,11 @@ class _MessagePageState extends State<MessagePage> {
   List<Message> get _currentMessages {
     switch (_selectedIndex) {
       case 0:
-        return _systemMessages;
+        return _privateMessages;
       case 1:
         return _commentMessages;
       case 2:
-        return _privateMessages;
+        return _systemMessages;
       default:
         return [];
     }
@@ -92,16 +92,23 @@ class _MessagePageState extends State<MessagePage> {
         title: const Text('消息', style: TextStyle(fontSize: 20)),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () => _markAllAsRead(),
-            icon: Icon(Icons.cleaning_services_sharp),
-          ),
-          IconButton(
-            onPressed: () {
-              // 进入消息设置
-              Navigator.pushNamed(context, '/message_settings');
-            },
-            icon: Icon(Icons.settings),
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () => _markAllAsRead(),
+                  icon: Icon(Icons.cleaning_services_sharp, size: 20),
+                ),
+                IconButton(
+                  onPressed: () {
+                    // 进入消息设置
+                    Navigator.pushNamed(context, '/message_settings');
+                  },
+                  icon: Icon(Icons.settings, size: 24),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -109,24 +116,47 @@ class _MessagePageState extends State<MessagePage> {
         children: [
           // 3.2 消息分类
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: SegmentedButton<int>(
-              showSelectedIcon: false,
-              segments: [
-                ButtonSegment(value: 0, label: _buildSegmentLabel('私信', 0)),
-                ButtonSegment(value: 1, label: _buildSegmentLabel('评论/回复', 1)),
-                ButtonSegment(value: 2, label: _buildSegmentLabel('系统通知', 2)),
-              ],
-              selected: {_selectedIndex},
-              onSelectionChanged: (Set<int> newSelection) {
-                setState(() {
-                  _selectedIndex = newSelection.first;
-                });
-              },
-              style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<int>(
+                showSelectedIcon: false,
+                segments: [
+                  ButtonSegment(
+                    value: 0,
+                    label: Center(child: _buildSegmentLabel('私信', 0)),
+                  ),
+                  ButtonSegment(
+                    value: 1,
+                    label: Center(child: _buildSegmentLabel('评论/回复', 1)),
+                  ),
+                  ButtonSegment(
+                    value: 2,
+                    label: Center(child: _buildSegmentLabel('系统通知', 2)),
+                  ),
+                ],
+                selected: {_selectedIndex},
+                onSelectionChanged: (Set<int> newSelection) {
+                  setState(() {
+                    _selectedIndex = newSelection.first;
+                  });
+                },
+                style: ButtonStyle(
+                  minimumSize: WidgetStateProperty.all(Size(0, 40)),
+                  maximumSize: WidgetStateProperty.all(
+                    Size(double.infinity, 40),
+                  ),
+                  textStyle: WidgetStateProperty.all(
+                    const TextStyle(height: 1.0),
+                  ),
+                  padding: WidgetStateProperty.resolveWith<EdgeInsetsGeometry>(
+                    (states) => const EdgeInsets.symmetric(vertical: 0),
+                  ),
+                  alignment: Alignment.center,
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 ),
               ),
@@ -214,16 +244,21 @@ class _MessagePageState extends State<MessagePage> {
 
   Widget _buildSegmentLabel(String text, int unreadCount) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(text),
         if (unreadCount > 0)
           Container(
+            alignment: Alignment.center,
+            width: 18,
+            height: 18,
             margin: const EdgeInsets.only(left: 4),
             padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
             decoration: BoxDecoration(
               color: Colors.red,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               unreadCount.toString(),
@@ -255,7 +290,7 @@ class _MessagePageState extends State<MessagePage> {
         color = Colors.grey;
     }
     return CircleAvatar(
-      backgroundColor: color.withOpacity(0.2),
+      backgroundColor: color.withValues(alpha: 20),
       child: Icon(icon, color: color, size: 20),
     );
   }

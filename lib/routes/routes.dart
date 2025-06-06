@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reada/pages/community_page.dart';
 import 'package:reada/pages/verification_page.dart';
 
 import '../pages/login_page.dart';
@@ -10,9 +11,10 @@ import '../pages/shelf_page.dart';
 class Routes {
   static const String shelf = '/';
   static const String login = '/login';
-  static const String mine = '/mine';
+  static const String profile = '/mine';
   static const String message = '/message';
   static const String verification = '/verification';
+  static const String community = '/community';
 }
 
 class AppRoutes {
@@ -37,7 +39,7 @@ class AppRoutes {
             );
           },
         );
-      case Routes.mine:
+      case Routes.profile:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
       case Routes.message:
         return MaterialPageRoute(builder: (_) => const MessagePage());
@@ -60,6 +62,8 @@ class AppRoutes {
             );
           },
         );
+      case Routes.community:
+        return MaterialPageRoute(builder: (_) => const CommunityPage());
       default:
         return MaterialPageRoute(
           builder:
