@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:reada/pages/verification_page.dart';
 
-import '../pages/login.dart';
-import '../pages/message.dart';
-import '../pages/profile.dart';
-import '../pages/shelf.dart';
+import '../pages/login_page.dart';
+import '../pages/message_page.dart';
+import '../pages/profile_page.dart';
+import '../pages/shelf_page.dart';
 
 // 路由常量
 class Routes {

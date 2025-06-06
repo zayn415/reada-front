@@ -21,6 +21,10 @@ class _ShelfPageState extends State<ShelfPage> {
     Book(null, 'Flutter实战', 0.35),
     Book(null, 'Dart编程', 0.0),
     Book(null, '设计模式', 0.8),
+    Book(null, 'Flutter实战', 0.35),
+    Book(null, 'Flutter实战', 0.35),
+    Book(null, 'Dart编程', 0.0),
+    Book(null, '设计模式', 0.8),
   ];
 
   @override
@@ -147,9 +151,8 @@ class _ShelfPageState extends State<ShelfPage> {
       padding: const EdgeInsets.all(16),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        childAspectRatio: 3 / 4,
-        crossAxisSpacing: 14,
-        mainAxisSpacing: 14,
+        childAspectRatio: 0.56,
+        crossAxisSpacing: 10,
       ),
       itemCount: _books.length,
       itemBuilder: (context, index) {

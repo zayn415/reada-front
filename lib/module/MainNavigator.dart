@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../constants/colors.dart';
-import '../pages/message.dart';
-import '../pages/profile.dart';
-import '../pages/shelf.dart';
+import '../pages/message_page.dart';
+import '../pages/profile_page.dart';
+import '../pages/shelf_page.dart';
 
 // 页面底部导航栏
 class MainNavigator extends StatefulWidget {
